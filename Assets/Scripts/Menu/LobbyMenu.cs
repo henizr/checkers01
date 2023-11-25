@@ -16,14 +16,22 @@ public class LobbyMenu : MonoBehaviour
     {
 
     PlayerNetwork.ClientOnInfoUpdated += ClientHandleInfoUpdated;
-
+        PlayerNetwork.AuthorityOnLobbyOwnerStateUpdated += AuthorityHandleLobbyOwnerStateUpdated;
     }
     void OnDestroy()
     {
 
     PlayerNetwork.ClientOnInfoUpdated -= ClientHandleInfoUpdated;
+        PlayerNetwork.AuthorityOnLobbyOwnerStateUpdated -= AuthorityHandleLobbyOwnerStateUpdated;
+    }
+
+    void AuthorityHandleLobbyOwnerStateUpdated(bool state)
+    {
+
+        startGameButton.gameObject.SetActive(state);
 
     }
+
     void ClientHandleInfoUpdated()
     {
         List<PlayerNetwork> players = ((CheckersNetworkManager)NetworkManager.singleton).NetworkPlayers;
@@ -33,6 +41,8 @@ public class LobbyMenu : MonoBehaviour
         }
         for (int i = players.Count; i < playerNameTexts.Length; i++)
             playerNameTexts[i].text = "Ждем игрока...";
+
+        startGameButton.interactable = players.Count >= 2;
     }
 
     public void StartGame()

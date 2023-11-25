@@ -9,8 +9,11 @@ public class PlayerNetwork : Player
 {
 
 public static event Action ClientOnInfoUpdated;
+public static event Action<bool> AuthorityOnLobbyOwnerStateUpdated;
 
-[SyncVar(hook = nameof(ClientHandleDisplayNameUpdated))]
+
+
+    [SyncVar(hook = nameof(ClientHandleDisplayNameUpdated))]
 string displayName;
 public string DisplayName
 {
@@ -18,7 +21,26 @@ public string DisplayName
     [Server]
     set { displayName = value; }
 }
-void ClientHandleDisplayNameUpdated(string oldName, string newName)
+
+    [SyncVar(hook = nameof(AuthorityHandleLobbyOwnerStateUpdated))]
+    bool lobbyOwner;
+
+    void AuthorityHandleLobbyOwnerStateUpdated(bool oldState, bool newState)
+    {
+        if (!hasAuthority)
+
+            return;
+
+        AuthorityOnLobbyOwnerStateUpdated?.Invoke(newState);
+    }
+
+    public bool LobbyOwner
+    {
+        get { return lobbyOwner; }
+        [Server]
+        set { lobbyOwner = value; }
+    }
+    void ClientHandleDisplayNameUpdated(string oldName, string newName)
 {
     ClientOnInfoUpdated?.Invoke();
 }
@@ -44,4 +66,6 @@ if (!isClientOnly)
 ClientOnInfoUpdated?.Invoke();
 
 }
+
+
 }
