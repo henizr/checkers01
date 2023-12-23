@@ -14,13 +14,13 @@ public static event Action<bool> AuthorityOnLobbyOwnerStateUpdated;
 
 
     [SyncVar(hook = nameof(ClientHandleDisplayNameUpdated))]
-string displayName;
-public string DisplayName
-{
-    get { return displayName; }
-    [Server]
-    set { displayName = value; }
-}
+    string displayName;
+    public string DisplayName
+    {
+        get { return displayName; }
+        [Server]
+        set { displayName = value; }
+    }
 
     [SyncVar(hook = nameof(AuthorityHandleLobbyOwnerStateUpdated))]
     bool lobbyOwner;
